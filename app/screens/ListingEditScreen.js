@@ -72,8 +72,9 @@ const ListingEditSchema = Yup.object().shape({
 
 export default function ListingEditScreen({ navigation }) {
   const handleSubmit = async (listings) => {
-    console.log(listings);
-    const response = await apiListings.addListing(listings);
+    const response = await apiListings.addListing(listings, (progress) =>
+      console.log(progress)
+    );
     if (!response.ok) return console.log(response.originalError);
     alert("Success");
   };
