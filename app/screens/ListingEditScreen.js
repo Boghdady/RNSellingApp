@@ -14,6 +14,7 @@ import {
 import AppFormPicker from "../components/forms/AppFormPicker";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
+import UploadScreen from "./UploadScreen";
 
 const categories = [
   {
@@ -71,15 +72,28 @@ const ListingEditSchema = Yup.object().shape({
 });
 
 export default function ListingEditScreen({ navigation }) {
+  const [progressValue, setProgressValue] = useState(0);
+  const [uploadScreenVisable, setUploadScreenVisable] = useState(false);
+
   const handleSubmit = async (listings) => {
+    setProgressValue(0);
+    setUploadScreenVisable(true);
     const response = await apiListings.addListing(listings, (progress) =>
-      console.log(progress)
+      setProgressValue(progress)
     );
-    if (!response.ok) return console.log(response.originalError);
-    alert("Success");
+
+    if (!response.ok) {
+      setUploadScreenVisable(false);
+      return alert("error");
+    }
   };
   return (
     <Screen>
+      <UploadScreen
+        visable={uploadScreenVisable}
+        progressValue={progressValue}
+        onAnimationFinish={() => setUploadScreenVisable(false)}
+      />
       <View style={styles.contrainer}>
         <AppForm
           initialValues={{
